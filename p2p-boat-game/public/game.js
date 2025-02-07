@@ -4,9 +4,8 @@ const peer = new Peer();
 let connection;
 let playerGrid = createGrid();
 let opponentGrid = createGrid();
-let playerTurn = true; // Indique si c'est le tour du joueur
+let playerTurn = true;
 
-// Crée une grille de 10x10 pour chaque joueur
 function createGrid() {
   const grid = [];
   for (let i = 0; i < 10; i++) {
@@ -19,17 +18,15 @@ function createGrid() {
   return grid;
 }
 
-// Fonction pour afficher une grille
 function renderGrid(grid, gridId) {
   const gridDiv = document.getElementById(gridId);
-  gridDiv.innerHTML = ''; // Réinitialise la grille avant de la redessiner
+  gridDiv.innerHTML = '';
   grid.forEach(row => {
     row.forEach(cell => {
       const cellDiv = document.createElement('div');
       cellDiv.dataset.x = cell.x;
       cellDiv.dataset.y = cell.y;
 
-      // Ajout du style en fonction du statut de la case
       if (cell.status === 'hit') {
         cellDiv.classList.add('hit');
       } else if (cell.status === 'miss') {
@@ -43,7 +40,6 @@ function renderGrid(grid, gridId) {
   });
 }
 
-// Fonction d'attaque (à compléter avec la logique du jeu)
 function attack(x, y) {
   if (opponentGrid[x][y].status === 'empty') {
     opponentGrid[x][y].status = 'miss';
@@ -54,7 +50,6 @@ function attack(x, y) {
   }
 }
 
-// Fonction pour gérer les clics sur la grille
 document.getElementById("playerGrid").addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -78,14 +73,12 @@ document.getElementById("playerGrid").addEventListener("click", (event) => {
   }
 });
 
-// Lorsqu'une connexion est établie, l'ID du joueur est récupéré
 peer.on("open", (id) => {
   console.log("Mon ID PeerJS :", id);
   document.getElementById("gameStatus").innerText = `Votre ID: ${id}`;
   socket.send(JSON.stringify({ type: "register", id }));
 });
 
-// Connexion à un adversaire
 document.getElementById("startGameBtn").addEventListener("click", () => {
   const opponentId = prompt("Entrez l'ID du joueur adverse :");
   if (!opponentId) {
@@ -107,20 +100,18 @@ document.getElementById("startGameBtn").addEventListener("click", () => {
     if (message.type === "move") {
       document.getElementById("gameStatus").innerText = `L'autre joueur a joué : (${message.x}, ${message.y})`;
 
-      // Ne pas renvoyer un message immédiatement tant que l'adversaire n'a pas joué.
       if (playerGrid[message.x][message.y].status === 'empty') {
-        const result = attack(message.x, message.y); // Traite l'attaque reçue
+        const result = attack(message.x, message.y);
         connection.send(JSON.stringify({ type: "move", result, x: message.x, y: message.y }));
       }
-      updateGrids(); // Met à jour l'affichage après la réponse
-      playerTurn = true; // C'est maintenant le tour du joueur
+      updateGrids();
+      playerTurn = true;
     } else if (message.type === "message") {
       console.log("Message reçu :", message.text);
     }
   });
 });
 
-// Gestion de l'arrivée d'une connexion
 peer.on("connection", (conn) => {
   connection = conn;
 
@@ -130,13 +121,12 @@ peer.on("connection", (conn) => {
     if (message.type === "move") {
       document.getElementById("gameStatus").innerText = `L'autre joueur a joué : (${message.x}, ${message.y})`;
 
-      // Ne pas renvoyer un message immédiatement tant que l'adversaire n'a pas joué.
       if (playerGrid[message.x][message.y].status === 'empty') {
-        const result = attack(message.x, message.y); // Traite l'attaque reçue
+        const result = attack(message.x, message.y);
         connection.send(JSON.stringify({ type: "move", result, x: message.x, y: message.y }));
       }
-      updateGrids(); // Met à jour l'affichage après la réponse
-      playerTurn = true; // C'est maintenant le tour du joueur
+      updateGrids();
+      playerTurn = true;
     }
   });
 
@@ -147,11 +137,9 @@ peer.on("connection", (conn) => {
   });
 });
 
-// Met à jour l'affichage des grilles
 function updateGrids() {
   renderGrid(playerGrid, "playerGrid");
   renderGrid(opponentGrid, "opponentGrid");
 }
 
-// Initialisation de la grille
 updateGrids();

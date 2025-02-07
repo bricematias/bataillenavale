@@ -6,10 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <title>Bataille Navale</title>
     <style>
-        /* Style de la grille de jeu */
-        .clicked {
-            background-color: yellow; /* Exemple de couleur */
-        }
         .grid {
             display: grid;
             grid-template-columns: repeat(10, 30px);
@@ -23,18 +19,9 @@
             background-color: #e3e3e3;
             cursor: pointer;
         }
-        .hit {
-            background-color: red;
-        }
-        .miss {
-            background-color: blue;
-        }
-        .empty {
-            background-color: white;
-        }
 
         .grid div:hover {
-            background-color: #ccc; /* Modifier le fond quand la souris survole une case */
+            background-color: #ccc;
         }
     </style>
 </head>
@@ -43,7 +30,7 @@
 <button id="startGameBtn">Démarrer la Partie</button>
 <div id="gameStatus"></div>
 <div id="playerGrid" class="grid"></div>
-<div id="opponentGrid" class="grid"></div> <!-- Ajout de la grille de l'adversaire -->
+<div id="opponentGrid" class="grid"></div>
 <script src="game.js"></script>
 </body>
 </html>
